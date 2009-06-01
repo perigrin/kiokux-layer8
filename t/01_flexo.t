@@ -12,7 +12,8 @@ use Test::Deep;
 
     sub get_user_by_nick {
         my ( $self, $nick ) = @_;
-        ( $self->search( { nickstr => $nick } )->next )[0];
+        my $stream = $self->search( { nickstr => $nick } );
+        ( $stream->next )[0][0];
     }
 }
 {
@@ -63,15 +64,19 @@ ok(
 );
 
 ok(
-    my $u =
-      Flexo::Storage::User->new( nickstr => 'perigrin!perigrin@127.0.0.1)' ),
+    my $u
+        = Flexo::Storage::User->new(
+        nickstr => 'perigrin!perigrin@127.0.0.1' ),
     'new user'
 );
+
 ok( my $scope = $s->new_scope, 'new scope' );
 ok( my $uuid  = $s->store($u), 'store the user' );
 
-ok( my $u2 = $s->get_user_by_nick('perigrin!perigrin@127.0.0.1'),
-    'get_user_by_nick' );
+ok(
+    my $u2 = $s->get_user_by_nick('perigrin!perigrin@127.0.0.1'),
+    'get_user_by_nick'
+);
 cmp_deeply( $u2, $u, 'they tieout' );
 
 unlink('test.db');
