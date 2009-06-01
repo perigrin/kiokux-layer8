@@ -4,7 +4,7 @@ use namespace::autoclean;
 
 with qw(
   KiokuX::Layer8::Identity
-  KiokuX::User
+  KiokuX::User::Password
 );
 
 1;
