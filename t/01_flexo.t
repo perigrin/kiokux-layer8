@@ -46,16 +46,32 @@ use Test::Deep;
 
 }
 
-ok( my $s = Flexo::Storage->new( dsn => 'hash' ), 'new Flexo::Storage' );
+ok(
+    my $s = Flexo::Storage->new(
+        dsn        => 'dbi:SQLite:dbname=test.db',
+        extra_args => {
+            create  => 1,
+            columns => [
+                nickstr => {
+                    data_type   => "varchar",
+                    is_nullable => 1,
+                },
+            ],
+        }
+    ),
+    'new Flexo::Storage'
+);
+
 ok(
     my $u =
       Flexo::Storage::User->new( nickstr => 'perigrin!perigrin@127.0.0.1)' ),
     'new user'
 );
 ok( my $scope = $s->new_scope, 'new scope' );
-ok( my $uuid = $s->store($u), 'store the user' );
-warn $u->id;
-warn $uuid;
+ok( my $uuid  = $s->store($u), 'store the user' );
+
 ok( my $u2 = $s->get_user_by_nick('perigrin!perigrin@127.0.0.1'),
-    'get the user back out' );
+    'get_user_by_nick' );
 cmp_deeply( $u2, $u, 'they tieout' );
+
+unlink('test.db');
