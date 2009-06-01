@@ -4,12 +4,13 @@ use MooseX::Params::Validate;
 
 use namespace::autoclean;
 
-requires qw(insert search user_class);
+requires qw(insert search);
 
 sub add_user {
     my $self = shift;
     my ($user) =
-      validated_list( \@_, user => { isa => 'KiokuX::Layer8::User', }, );
+      pos_validated_list( \@_,
+        { isa => 'KiokuX::Layer8::User', coerce => 1, } );
 
     $self->txn_do( sub { $self->insert($user) } );
     return $user;
